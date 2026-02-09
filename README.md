@@ -10,13 +10,6 @@
 - 📋 **Modo Lista:** Audita múltiples objetivos desde un archivo (`-L`).
 - 🧹 **Limpio:** Filtra la salida para mostrar solo lo importante (Fechas, Registrar, Name Servers).
 
-## Instalación
-
-```bash
-git clone [https://github.com/jhondbarrera/domainfo.git](https://github.com/jhondbarrera/domainfo.git)
-cd domainfo
-sudo ./install.sh
-
 ## Uso
 
 #Ayuda
@@ -30,3 +23,10 @@ domainfo -L targets.txt
 
 # Ver manual completo
 man domainfo
+
+## Instalación
+
+```bash
+git clone [https://github.com/jhondbarrera/domainfo.git](https://github.com/jhondbarrera/domainfo.git)
+cd domainfo
+sudo ./install.sh
