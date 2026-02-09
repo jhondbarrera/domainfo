@@ -10,19 +10,12 @@
 - 📋 **Modo Lista:** Audita múltiples objetivos desde un archivo (`-L`).
 - 🧹 **Limpio:** Filtra la salida para mostrar solo lo importante (Fechas, Registrar, Name Servers).
 
-## Uso
+# Uso
 
-#Ayuda
-domainfo --help
-
-# Dominio único
-domainfo google.com
-
-# Lista de objetivos
-domainfo -L targets.txt
-
-# Ver manual completo
-man domainfo
+**Ayuda:** domainfo --help
+**Dominio único:** domainfo google.com
+**Lista de objetivos:** domainfo -L targets.txt
+**Ver manual completo:** man domainfo
 
 ## Instalación
 
