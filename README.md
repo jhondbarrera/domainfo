@@ -25,5 +25,5 @@
 Simplemente ejecuta el siguiente comando en tu terminal:
 
 ```bash
-curl -sL [https://raw.githubusercontent.com/jhondbarrera/domainfo/main/get.sh](https://raw.githubusercontent.com/jhondbarrera/domainfo/main/get.sh) | bash
+curl -sL https://raw.githubusercontent.com/jhondbarrera/domainfo/main/get.sh | bash
 ```
