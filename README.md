@@ -12,10 +12,13 @@
 
 # Uso
 
-**Ayuda:** domainfo --help
-**Dominio único:** domainfo google.com
-**Lista de objetivos:** domainfo -L targets.txt
-**Ver manual completo:** man domainfo
+**Ayuda:** domainfo --help.
+
+**Dominio único:** domainfo google.com.
+
+**Lista de objetivos:** domainfo -L targets.txt.
+
+**Ver manual completo:** man domainfo.
 
 ## Instalación
 
