@@ -22,7 +22,7 @@
 
 ## Instalación
 
+Simplemente ejecuta el siguiente comando en tu terminal:
+
 ```bash
-git clone [https://github.com/jhondbarrera/domainfo.git](https://github.com/jhondbarrera/domainfo.git)
-cd domainfo
-sudo ./install.sh
+curl -sL [https://raw.githubusercontent.com/jhondbarrera/domainfo/main/get.sh](https://raw.githubusercontent.com/jhondbarrera/domainfo/main/get.sh) | bash
