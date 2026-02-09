@@ -17,7 +17,9 @@ git clone [https://github.com/jhondbarrera/domainfo.git](https://github.com/jhon
 cd domainfo
 sudo ./install.sh
 
-# Ayuda
+## Uso
+
+#Ayuda
 domainfo --help
 
 # Dominio único
