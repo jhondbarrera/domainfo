@@ -1,0 +1,38 @@
+.TH DOMAINFO 1 "Febrero 2026" "v1.3.0" "Manual de Usuario"
+.SH NOMBRE
+domainfo \- Auditoría rápida de WHOIS e IANA.
+.SH SINOPSIS
+.B domainfo
+[\fIDOMINIO\fR]
+.br
+.B domainfo
+[\fI-L ARCHIVO\fR]
+.br
+.B domainfo
+[\fI-h | --help\fR]
+.SH DESCRIPCIÓN
+.B domainfo
+es una utilidad desarrollada por Jhon Barrera para simplificar la obtención de información de registro de dominios.
+.PP
+A diferencia del comando \fBwhois\fR estándar, \fBdomainfo\fR consulta primero a la IANA para determinar el servidor de registro (TLD) autoritativo correcto y luego realiza la consulta específica.
+.SH OPCIONES
+.TP
+.BR \-h ", " \-\-help
+Muestra el mensaje de ayuda y termina la ejecución.
+.TP
+.BR \-L " \fIarchivo\fR"
+Modo lista. Lee un archivo de texto plano línea por línea, auditando cada dominio encontrado.
+.TP
+.BR \fIDOMINIO\fR
+Si se proporciona un argumento sin opciones, se interpreta como el dominio objetivo.
+.SH EJEMPLOS
+.TP
+Auditar un solo dominio:
+.B domainfo google.com
+.TP
+Auditar una lista de objetivos:
+.B domainfo -L targets.txt
+.SH AUTOR
+Escrito por \fBJhon Barrera.
+.SH COPYRIGHT
+Copyright \(co 2026 Jhon Barrera. Licencia MIT.
