@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # =========================
-# Instalador DOMAINFO v1.0
+# Instalador DOMAINFO v1.1
 # =========================
 
 # Modo estricto: si algo falla, aborta y muestra línea
