@@ -1,12 +1,15 @@
-.TH DOMAINFO 1 "Febrero 2026" "v1.0" "Manual de Usuario"
+.TH DOMAINFO 1 "Febrero 2026" "v1.2" "Manual de Usuario"
 .SH NOMBRE
-domainfo \- Auditoría rápida de WHOIS e IANA.
+domainfo \- Auditoría rápida de WHOIS e IANA y recolección de inteligencia de dominios.
 .SH SINOPSIS
 .B domainfo
-[\fIDOMINIO\fR]
+[\fIDOMINIO\fR...]
 .br
 .B domainfo
 [\fI-L ARCHIVO\fR]
+.br
+.B domainfo
+[\fI-upgrade | --upgrade\fR]
 .br
 .B domainfo
 [\fI-h | --help\fR]
@@ -14,25 +17,36 @@ domainfo \- Auditoría rápida de WHOIS e IANA.
 .B domainfo
 es una utilidad desarrollada por Jhon Barrera para simplificar la obtención de información de registro de dominios.
 .PP
-A diferencia del comando \fBwhois\fR estándar, \fBdomainfo\fR consulta primero a la IANA para determinar el servidor de registro (TLD) autoritativo correcto y luego realiza la consulta específica.
+A diferencia del comando \fBwhois\fR estándar, \fBdomainfo\fR consulta primero a la IANA para determinar el servidor de registro (TLD) autoritativo correcto y luego realiza la consulta específica, filtrando los datos para mostrar solo la información crítica (fechas, estado, name servers).
+.PP
+Si se ejecuta sin argumentos, la herramienta entrará en **modo interactivo**, solicitando al usuario que ingrese los dominios manualmente.
 .SH OPCIONES
 .TP
 .BR \-h ", " \-\-help
 Muestra el mensaje de ayuda y termina la ejecución.
 .TP
+.BR \-upgrade ", " \-\-upgrade
+Conecta con el repositorio oficial y actualiza la herramienta a la última versión disponible (requiere permisos de escritura en el directorio de instalación).
+.TP
 .BR \-L " \fIarchivo\fR"
 Modo lista. Lee un archivo de texto plano línea por línea, auditando cada dominio encontrado.
 .TP
-.BR \fIDOMINIO\fR
-Si se proporciona un argumento sin opciones, se interpreta como el dominio objetivo.
+.BR \fIDOMINIO\fR...
+Uno o más dominios a auditar. Se pueden ingresar múltiples objetivos separados por espacio.
 .SH EJEMPLOS
 .TP
 Auditar un solo dominio:
 .B domainfo google.com
 .TP
-Auditar una lista de objetivos:
+Auditar múltiples objetivos simultáneamente:
+.B domainfo google.com data-tools.com.co microsoft.com
+.TP
+Auditar una lista desde archivo:
 .B domainfo -L targets.txt
+.TP
+Actualizar la herramienta:
+.B sudo domainfo -upgrade
 .SH AUTOR
-Escrito por \fBJhon Barrera.
+Escrito por \fBJhon Barrera\fR (Director de Ciberseguridad).
 .SH COPYRIGHT
 Copyright \(co 2026 Jhon Barrera. Licencia MIT.
