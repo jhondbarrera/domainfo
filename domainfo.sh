@@ -5,7 +5,7 @@
 # Descripción: Auditoría rápida de información de dominios (WHOIS/IANA).
 # Compatibilidad: Bash & Zsh
 # Autor: Jhon Barrera
-# Versión: 1.0
+# Versión: 1.1
 # =================================================================
 
 # Colores
@@ -13,6 +13,7 @@ RED='\033[0;31m'
 GREEN='\033[0;32m'
 YELLOW='\033[1;33m'
 BLUE='\033[0;34m'
+CYAN='\033[0;36m'
 NC='\033[0m' # No Color
 
 banner() {
@@ -25,7 +26,7 @@ banner() {
 /_____/\____/_/ /_/ /_/\__,_/_/_/ /_//_/  \____/ 
                                                  
 EOF
-    echo -e "        v1.0 - By Jhon Barrera"
+    echo -e "        v1.1 - By Jhon Barrera"
     echo -e "${NC}"
 }
 
@@ -54,19 +55,40 @@ domainfo() {
     
     echo -e "${YELLOW}[*] Buscando servidor WHOIS para TLD: ${t}${NC}"
     
-    # Consulta a IANA
+    # Consulta a IANA para obtener el servidor correcto
     s=$(whois -h whois.iana.org "$t" | grep -i "whois:" | awk '{print $2}' | head -n 1)
 
     if [[ -n "$s" ]]; then
         echo -e "${GREEN}[+] Servidor encontrado: ${s}${NC}"
-        echo -e "----------------------------------------"
-        # Consulta al servidor específico
-        whois -h "$s" "$d" | grep -iE "Domain Name:|Creation Date:|Registry Expiry Date:|Registrar:|Status:|Name Server:"
+        echo -e "\n=================================================================="
+        printf "${CYAN}%-25s %-40s${NC}\n" "PARAMETRO" "VALOR"
+        echo -e "=================================================================="
+
+        whois -h "$s" "$d" | grep -iE "Domain Name:|Creation Date:|Registry Expiry Date:|Registrar:|Status:|Name Server:" | while IFS=':' read -r key val; do
+            # #Limpiar URL de la ICANN
+            # val=$(echo "$val" | xargs)
+            # val=${val%% http*}
+
+            case "$(echo "$key" | tr '[:upper:]' '[:lower:]')" in
+                *"domain name"*)      label="Dominio" ;;
+                *"creation date"*)    label="Fecha creación" ;;
+                *"expiry date"*)      label="Expira el" ;;
+                *"registrar"*)        label="Registrador" ;;
+                *"status"*)           label="Estado" ;;
+                *"name server"*)      label="Name Server" ;;
+                *) label="$key" ;; # Si algo no coincide, muestra el original
+            esac
+
+            # 4. Imprimir en formato tabla (Columna 1: 25 chars, Columna 2: Resto)
+            printf "%-25s %s\n" "$label:" "$val"
+        done
+        echo -e "==================================================================\n"
     else
         echo -e "${RED}[!] Error: No se encontró servidor WHOIS para $t.${NC}"
     fi
 }
 
+# Argumentos
 case "$1" in
     -h|--help)
         show_help
