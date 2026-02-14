@@ -5,8 +5,11 @@
 # Descripción: Auditoría rápida de información de dominios (WHOIS/IANA).
 # Compatibilidad: Bash & Zsh
 # Autor: Jhon Barrera
-# Versión: 1.1
+# Versión: 1.2 (Soporte multi-dominio en línea y actualizacion)
 # =================================================================
+
+# Configuración del Repositorio
+REPO_URL="https://raw.githubusercontent.com/jhondbarrera/domainfo/main/domainfo.sh"
 
 # Colores
 RED='\033[0;31m'
@@ -26,24 +29,55 @@ banner() {
 /_____/\____/_/ /_/ /_/\__,_/_/_/ /_//_/  \____/ 
                                                  
 EOF
-    echo -e "        v1.1 - By Jhon Barrera"
+    echo -e "        v1.2 - By Jhon Barrera"
     echo -e "${NC}"
 }
 
 show_help() {
     banner
-    echo -e "Uso: domainfo [OPCIÓN] [OBJETIVO]"
+    echo -e "Uso: domainfo [OPCIÓN] [DOMINIO_1] [DOMINIO_2]..."
     echo -e "\nDescripción:"
     echo -e "  Herramienta de auditoría para obtener información de registro de dominios."
     echo -e "  Consulta IANA para determinar el servidor WHOIS correcto y extrae datos clave."
     echo -e "\nOpciones:"
     echo -e "  -h, --help      Muestra este mensaje de ayuda y sale."
+    echo -e "  -upgrade        Actualiza la herramienta a la última versión disponible."
     echo -e "  -L <archivo>    Procesa una lista de dominios desde un archivo de texto."
-    echo -e "  <dominio>       Audita un dominio específico (ej: google.com)."
     echo -e "\nEjemplos:"
     echo -e "  domainfo google.com"
+    echo -e "  domainfo google.com hotmail.com chatgpt.com"
     echo -e "  domainfo -L targets.txt"
+    echo -e "  domainfo -upgrade"
     echo -e "\nAutor: Jhon Barrera"
+}
+
+update_tool() {
+    echo -e "${YELLOW}[*] Iniciando proceso de actualización...${NC}"
+    SCRIPT_PATH=$(realpath "$0")
+    TEMP_FILE="/tmp/domainfo_update"
+
+    if [ ! -w "$SCRIPT_PATH" ]; then
+        echo -e "${RED}[!] Error: No tienes permisos de escritura en $SCRIPT_PATH.${NC}"
+        echo -e "${YELLOW}[*] Por favor ejecuta: sudo domainfo -upgrade${NC}"
+        exit 1
+    fi
+
+    echo -e "${BLUE}[INFO] Descargando última versión desde GitHub...${NC}"
+    if curl -sL "$REPO_URL" -o "$TEMP_FILE"; then
+        if grep -q "#!/bin/bash" "$TEMP_FILE"; then
+            mv "$TEMP_FILE" "$SCRIPT_PATH"
+            chmod +x "$SCRIPT_PATH"
+            echo -e "${GREEN}[SUCCESS] ¡Actualización completada!${NC}"
+            exit 0
+        else
+            echo -e "${RED}[!] Error: El archivo descargado parece corrupto.${NC}"
+            rm -f "$TEMP_FILE"
+            exit 1
+        fi
+    else
+        echo -e "${RED}[!] Error: Falló la conexión con el repositorio.${NC}"
+        exit 1
+    fi
 }
 
 domainfo() {
@@ -65,9 +99,8 @@ domainfo() {
         echo -e "=================================================================="
 
         whois -h "$s" "$d" | grep -iE "Domain Name:|Creation Date:|Registry Expiry Date:|Registrar:|Status:|Name Server:" | while IFS=':' read -r key val; do
-            # #Limpiar URL de la ICANN
-            # val=$(echo "$val" | xargs)
-            # val=${val%% http*}
+            val=$(echo "$val" | xargs)
+            val=${val%% http*} 
 
             case "$(echo "$key" | tr '[:upper:]' '[:lower:]')" in
                 *"domain name"*)      label="Dominio" ;;
@@ -76,10 +109,9 @@ domainfo() {
                 *"registrar"*)        label="Registrador" ;;
                 *"status"*)           label="Estado" ;;
                 *"name server"*)      label="Name Server" ;;
-                *) label="$key" ;; # Si algo no coincide, muestra el original
+                *) label="$key" ;; 
             esac
 
-            # 4. Imprimir en formato tabla (Columna 1: 25 chars, Columna 2: Resto)
             printf "%-25s %s\n" "$label:" "$val"
         done
         echo -e "==================================================================\n"
@@ -88,10 +120,14 @@ domainfo() {
     fi
 }
 
-# Argumentos
+# Lógica principal
 case "$1" in
     -h|--help)
         show_help
+        exit 0
+        ;;
+    -upgrade|--upgrade)
+        update_tool
         exit 0
         ;;
     -L)
@@ -100,10 +136,8 @@ case "$1" in
             banner
             echo -e "${BLUE}[INFO] Procesando lista: $list_file${NC}"
             while IFS= read -r line || [[ -n "$line" ]]; do
-                # Limpieza y validación
                 line=$(echo "$line" | xargs)
                 [[ -z "$line" || "$line" =~ ^# ]] && continue
-                
                 echo -e "\n${BLUE}>>> Auditando: $line${NC}"
                 domainfo "$line"
             done < "$list_file"
@@ -114,13 +148,19 @@ case "$1" in
         ;;
     "")
         banner
-        printf "${YELLOW}Escribe el dominio a auditar: ${NC}"
-        read -r d
-        [[ -z "$d" ]] && exit 1
-        domainfo "$d"
+        printf "${YELLOW}Escribe el dominio (o dominios) a auditar: ${NC}"
+        read -r input_domains
+        [[ -z "$input_domains" ]] && exit 1
+        for d in $input_domains; do
+             echo -e "\n${BLUE}>>> Auditando: $d${NC}"
+             domainfo "$d"
+        done
         ;;
     *)
         banner
-        domainfo "$1"
+        for domain in "$@"; do
+            echo -e "\n${BLUE}>>> Auditando: $domain${NC}"
+            domainfo "$domain"
+        done
         ;;
 esac
